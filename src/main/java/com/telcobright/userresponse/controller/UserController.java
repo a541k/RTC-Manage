@@ -10,12 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "*")
+
 public class UserController {
 
     @Autowired
     ResponseService service;
 
-    //@CrossOrigin(origins = "*")
+
     @GetMapping("/greet")
     String greetUser(){
         return "hello";
@@ -24,7 +26,7 @@ public class UserController {
 
     //log in response
     //@CrossOrigin(origins = "*")
-    @GetMapping("/user")
+    @PostMapping("/validateUser")
     ResponseEntity<ResponseDto> getUserResponse(@RequestBody LogInData logInData){
         return service.getUserResponse(logInData.getEmail(), logInData.getPassword());
     }
