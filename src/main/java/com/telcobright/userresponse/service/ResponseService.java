@@ -1,5 +1,6 @@
 package com.telcobright.userresponse.service;
 
+import com.telcobright.userresponse.dto.LoggedInUserData;
 import com.telcobright.userresponse.dto.ResponseDto;
 import com.telcobright.userresponse.entity.Permission;
 import com.telcobright.userresponse.entity.UserInfo;
@@ -38,15 +39,19 @@ public class ResponseService {
 
 
                     UserInfo userResponse = optionalResponse.get();
+
+                    LoggedInUserData data = new LoggedInUserData(userResponse.getFirstName()+" "+ userResponse.getLastName(), userResponse.getPhoneNo());
                     //userResponse.setSuccess(true);
 
+
                     ResponseDto responseDto = new ResponseDto();
+                    responseDto.setData(data);
                     responseDto.setMessage(userResponse.getMessage());
                     responseDto.setSuccess(true);
                     responseDto.setPermissions(userResponse.getPermissions());
 
 
-                    return new ResponseEntity<>(responseDto, HttpStatus.FOUND);
+                    return new ResponseEntity<>(responseDto, HttpStatus.OK);
                 }
             }else{
                 throw new Exception("Password did not match");
@@ -54,13 +59,13 @@ public class ResponseService {
         }
         catch (Exception e){
             System.err.println(e.getMessage());
-            return new ResponseEntity<>(new ResponseDto(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ResponseDto(), HttpStatus.NOT_FOUND);
         }
 
         System.out.println("Failed");
 
         //user not present with email
-        return new ResponseEntity<>(new ResponseDto(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(new ResponseDto(), HttpStatus.NOT_FOUND);
 
     }
 

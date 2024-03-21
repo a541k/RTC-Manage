@@ -11,7 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseDto {
-    String message;
-    boolean isSuccess = false;
-    List<Permission> permissions;
+    private LoggedInUserData data;
+    private String message;
+    private boolean isSuccess = false;
+    private List<Permission> permissions;
 }
