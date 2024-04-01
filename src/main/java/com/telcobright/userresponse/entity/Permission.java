@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 
 @Entity
-
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
