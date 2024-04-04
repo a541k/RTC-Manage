@@ -37,11 +37,11 @@ public class AuthController {
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
             String email = authentication.getName();
-            String fatherName = "Abul mia";
+            //String fatherName = "Abul mia";
             LogInData user = new LogInData(email,"");
             String token = jwtUtil.createToken(user);
 
-            LoginResponse loginRes = new LoginResponse(email,token, fatherName);
+            LoginResponse loginRes = new LoginResponse(email,token);
 
             return ResponseEntity.ok(loginRes);
 
@@ -54,9 +54,9 @@ public class AuthController {
         }
     }
     @ResponseBody
-    @GetMapping("/greet")
+    @GetMapping("/greet2")
     String greetUser(){
-        return "hello";
+        return "greet2";
     }
 
 }

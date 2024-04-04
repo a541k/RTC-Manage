@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Repository
-//@Component
-//@Service
 public interface UserRepo extends CrudRepository<UserInfo, Integer> {
     UserInfo findByEmail(String email);
 }

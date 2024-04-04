@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 
 @Entity
-public class Permission {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Integer Id;
 
-    @Column(unique = true)
-    private int permission;
+    @Column(unique = true, name = "role_")
+    private String role;
 }

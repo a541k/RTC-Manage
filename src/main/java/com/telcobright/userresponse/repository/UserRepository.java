@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface UserRepository extends CrudRepository<UserInfo, Integer> {
     List<UserInfo> findAllByEmail(String email);
+//    List<UserInfo> findAllById();
 }

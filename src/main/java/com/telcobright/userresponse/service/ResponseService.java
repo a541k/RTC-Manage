@@ -2,7 +2,7 @@ package com.telcobright.userresponse.service;
 
 import com.telcobright.userresponse.dto.LoggedInUserData;
 import com.telcobright.userresponse.dto.ResponseDto;
-import com.telcobright.userresponse.entity.Permission;
+import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
 import com.telcobright.userresponse.repository.PermissionRepository;
 import com.telcobright.userresponse.repository.UserRepository;
@@ -46,9 +46,9 @@ public class ResponseService {
 
                     ResponseDto responseDto = new ResponseDto();
                     responseDto.setData(data);
-                    responseDto.setMessage(userResponse.getMessage());
+//                    responseDto.setMessage(userResponse.getMessage());
                     responseDto.setSuccess(true);
-                    responseDto.setPermissions(userResponse.getPermissions());
+                    responseDto.setPermissions(userResponse.getRoles());
 
 
                     return new ResponseEntity<>(responseDto, HttpStatus.OK);
@@ -70,9 +70,7 @@ public class ResponseService {
     }
 
 
-
     //create user
-
     public ResponseEntity<String> createNewUser(UserInfo userData) {
 
         try{
@@ -85,14 +83,17 @@ public class ResponseService {
         return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
     }
 
+//    public List<UserInfo> getAllUser(){
+//        return userRepo.findAllById();
+//    }
 
 
     //create permission
-    public ResponseEntity<String> addNewPermission(Permission permissionInput) {
+    public ResponseEntity<String> addNewPermission(Role permissionInput) {
         try{
-            Permission permission = new Permission();
-            permission.setPermission(permissionInput.getPermission());
-            permissionRepo.save(permission);
+            Role role = new Role();
+            role.setRole(permissionInput.getRole());
+            permissionRepo.save(role);
             return new ResponseEntity<>("Success", HttpStatus.CREATED);
         }
         catch (Exception e){
@@ -103,17 +104,16 @@ public class ResponseService {
     }
 
 
-
     //give existing user an existing permission
     public ResponseEntity<String> permitUser(Integer userId, int permissionId) {
         try{
             Optional<UserInfo> optionalUserInfo = userRepo.findById(userId);
-            Optional<Permission> optionalPermission = permissionRepo.findById(permissionId);
+            Optional<Role> optionalPermission = permissionRepo.findById(permissionId);
             if(optionalUserInfo.isPresent() && optionalPermission.isPresent()){
                 UserInfo user = optionalUserInfo.get();
-                Permission permission = optionalPermission.get();
+                Role permission = optionalPermission.get();
 
-                List<Permission> userPermissions = user.getPermissions();
+                List<Role> userPermissions = user.getRoles();
                 userPermissions.add(permission);
 
                 userRepo.save(user);
@@ -130,4 +130,6 @@ public class ResponseService {
         }
         return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
     }
+
+
 }
