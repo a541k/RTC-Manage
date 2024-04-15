@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +76,10 @@ public class ResponseService {
     public ResponseEntity<String> createNewUser(UserInfo userData) {
 
         try{
+            LocalDate localDate = LocalDate.now();
+            Date date = Date.valueOf(localDate);
+            userData.setCreatedOn(date);
+
             userRepo.save(userData);
             return new ResponseEntity<>("Created", HttpStatus.CREATED);
         }
@@ -87,6 +93,18 @@ public class ResponseService {
 //        return userRepo.findAllById();
 //    }
 
+    public void editUser(Integer id, UserInfo user){
+        UserInfo existingUser = userRepo.findById(id).orElseThrow(() ->new RuntimeException("User not found"));
+
+        existingUser.setEmail(user.getEmail());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setPhoneNo(user.getPhoneNo());
+        existingUser.setStatus(user.getStatus());
+        existingUser.setPassword(user.getPassword());
+
+        userRepo.save(existingUser);
+    }
 
     //create permission
     public ResponseEntity<String> addNewPermission(Role permissionInput) {
