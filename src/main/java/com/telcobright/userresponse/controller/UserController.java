@@ -2,14 +2,18 @@ package com.telcobright.userresponse.controller;
 
 import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
+import com.telcobright.userresponse.repository.TokenBlacklist;
 import com.telcobright.userresponse.repository.UserInfoRepo;
+import com.telcobright.userresponse.service.InMemoryTokenBlacklist;
 import com.telcobright.userresponse.service.ResponseService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/auth/")
@@ -17,10 +21,16 @@ import java.util.List;
 
 public class UserController {
 
+    private  final ResponseService service;
+    private  final UserInfoRepo userInfoRepoService;
+    private  final InMemoryTokenBlacklist inMemoryTokenBlacklist;
+
     @Autowired
-    ResponseService service;
-    @Autowired
-    UserInfoRepo userInfoRepoService;
+    public UserController(ResponseService service, UserInfoRepo userInfoRepoService, InMemoryTokenBlacklist tokenBlacklist) {
+        this.service = service;
+        this.userInfoRepoService = userInfoRepoService;
+        this.inMemoryTokenBlacklist = tokenBlacklist;
+    }
 
 
     @GetMapping("/greet")
@@ -61,7 +71,17 @@ public class UserController {
         return userInfoRepoService.findAll();
     }
 
+    @GetMapping("/user/{id}")
+    Optional<UserInfo> allUser (@PathVariable Integer id){
+        return userInfoRepoService.findById(id);
+    }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request){
+        String token = service.extractTokenFromRequest(request);
+        inMemoryTokenBlacklist.addToBlacklist(token);
+        return ResponseEntity.ok("Logged out/blacklisted successfully");
+    }
 
 
 

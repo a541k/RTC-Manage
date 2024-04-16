@@ -6,10 +6,12 @@ import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
 import com.telcobright.userresponse.repository.PermissionRepository;
 import com.telcobright.userresponse.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -150,4 +152,11 @@ public class ResponseService {
     }
 
 
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
+    }
 }

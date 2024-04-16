@@ -1,8 +1,10 @@
 package com.telcobright.userresponse.auth;
-//import com.telcobright.springjwt.model.User;
 import com.telcobright.userresponse.dto.LogInData;
+import com.telcobright.userresponse.repository.TokenBlacklist;
+import com.telcobright.userresponse.service.InMemoryTokenBlacklist;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +17,18 @@ public class JwtUtil {
 
 
     private final String secret_key = "mysecretkey";
-    private long accessTokenValidity = 1; // minutes
-
-    private final JwtParser jwtParser;
-
+    private long accessTokenValidity = 10; // minutes
     private final String TOKEN_HEADER = "Authorization";
     private final String TOKEN_PREFIX = "Bearer ";
 
-    public JwtUtil(){
+
+    private final JwtParser jwtParser;
+    private final InMemoryTokenBlacklist inMemoryTokenBlacklist;
+
+    @Autowired
+    public JwtUtil(InMemoryTokenBlacklist inMemoryTokenBlacklist){
         this.jwtParser = Jwts.parser().setSigningKey(secret_key);
+        this.inMemoryTokenBlacklist = inMemoryTokenBlacklist;
     }
 
     public String createToken(LogInData user) {
@@ -48,7 +53,7 @@ public class JwtUtil {
     public Claims resolveClaims(HttpServletRequest req) {
         try {
             String token = resolveToken(req);
-            if (token != null) {
+            if (token != null && !inMemoryTokenBlacklist.isBlacklisted(token)) {
                 return parseJwtClaims(token);
             }
             return null;

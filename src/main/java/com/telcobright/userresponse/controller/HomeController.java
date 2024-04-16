@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-@RequestMapping("/rest/auth/pp")
+@RequestMapping("/rest/auth/")
 public class HomeController {
     @ResponseBody
-    @RequestMapping(value = "/log",method = RequestMethod.GET)
+    @RequestMapping(value = "/authorization",method = RequestMethod.GET)
     public String hello(){
         return "Successfully Token verified1!!";
     }
