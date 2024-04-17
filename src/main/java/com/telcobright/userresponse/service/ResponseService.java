@@ -4,7 +4,7 @@ import com.telcobright.userresponse.dto.LoggedInUserData;
 import com.telcobright.userresponse.dto.ResponseDto;
 import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
-import com.telcobright.userresponse.repository.PermissionRepository;
+import com.telcobright.userresponse.repository.RoleRepository;
 import com.telcobright.userresponse.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +15,22 @@ import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ResponseService {
-    @Autowired
-    UserRepository userRepo;
+
+    private final UserRepository userRepo;
+
+    private final RoleRepository roleRepo;
 
     @Autowired
-    PermissionRepository permissionRepo;
+    public ResponseService(UserRepository userRepo, RoleRepository roleRepo) {
+        this.userRepo = userRepo;
+        this.roleRepo = roleRepo;
+    }
 
 
     //get user response
@@ -82,6 +88,18 @@ public class ResponseService {
             Date date = Date.valueOf(localDate);
             userData.setCreatedOn(date);
 
+            List<Role> validRoles = new ArrayList<>();
+
+
+            for(Role role : userData.getRoles()){
+                Optional<Role> optionalRole = roleRepo.findByName(role.getName());
+                if(optionalRole.isPresent()){
+                    validRoles.add(optionalRole.get());
+                }else {
+                    throw new Exception(role.getName() + " Role invalid");
+                }
+            }
+            userData.setRoles(validRoles);
             userRepo.save(userData);
             return new ResponseEntity<>("Created", HttpStatus.CREATED);
         }
@@ -108,48 +126,6 @@ public class ResponseService {
         userRepo.save(existingUser);
     }
 
-    //create permission
-    public ResponseEntity<String> addNewPermission(Role permissionInput) {
-        try{
-            Role role = new Role();
-            role.setName(permissionInput.getName());
-            permissionRepo.save(role);
-            return new ResponseEntity<>("Success", HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            System.err.println(e.getMessage());
-        }
-        return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
-
-    }
-
-
-    //give existing user an existing permission
-    public ResponseEntity<String> permitUser(Integer userId, int permissionId) {
-        try{
-            Optional<UserInfo> optionalUserInfo = userRepo.findById(userId);
-            Optional<Role> optionalPermission = permissionRepo.findById(permissionId);
-            if(optionalUserInfo.isPresent() && optionalPermission.isPresent()){
-                UserInfo user = optionalUserInfo.get();
-                Role permission = optionalPermission.get();
-
-                List<Role> userPermissions = user.getRoles();
-                userPermissions.add(permission);
-
-                userRepo.save(user);
-
-            }
-            else {
-                throw new Exception("User/Permission not Found");
-            }
-            return new ResponseEntity<>("Success", HttpStatus.OK);
-
-        }
-        catch(Exception e){
-            System.err.println(e.getMessage());
-        }
-        return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
-    }
 
 
     public String extractTokenFromRequest(HttpServletRequest request) {

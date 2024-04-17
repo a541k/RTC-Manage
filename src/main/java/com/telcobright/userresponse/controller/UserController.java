@@ -83,18 +83,4 @@ public class UserController {
         return ResponseEntity.ok("Logged out/blacklisted successfully");
     }
 
-
-
-    //create permission
-    @PostMapping("/createPermission")
-    ResponseEntity<String> addPermission(@RequestBody Role permission){
-        return service.addNewPermission(permission);
-    }
-
-
-    //permit user
-    @PostMapping("/permitUser")
-    ResponseEntity<String> givePermissionToUser(@RequestParam("userId") Integer userId, @RequestParam("permissionId") Integer permissionId){
-        return service.permitUser(userId, permissionId);
-    }
 }
