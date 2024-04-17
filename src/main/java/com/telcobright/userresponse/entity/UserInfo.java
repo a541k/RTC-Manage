@@ -44,6 +44,6 @@ public class UserInfo {
 
 //    private String message;
 
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.ALL)
     List<Role> roles;
 }

@@ -112,7 +112,7 @@ public class ResponseService {
     public ResponseEntity<String> addNewPermission(Role permissionInput) {
         try{
             Role role = new Role();
-            role.setRole(permissionInput.getRole());
+            role.setName(permissionInput.getName());
             permissionRepo.save(role);
             return new ResponseEntity<>("Success", HttpStatus.CREATED);
         }

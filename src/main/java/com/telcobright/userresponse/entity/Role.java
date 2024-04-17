@@ -13,6 +13,6 @@ public class Role {
     @JsonIgnore
     private Integer Id;
 
-    @Column(unique = true, name = "role_")
-    private String role;
+    @Column(unique = true)
+    private String name;
 }
