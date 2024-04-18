@@ -2,7 +2,7 @@ package com.telcobright.userresponse.controller;
 
 import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
-import com.telcobright.userresponse.repository.TokenBlacklist;
+import com.telcobright.userresponse.repository.RoleRepository;
 import com.telcobright.userresponse.repository.UserInfoRepo;
 import com.telcobright.userresponse.service.InMemoryTokenBlacklist;
 import com.telcobright.userresponse.service.ResponseService;
@@ -25,6 +25,7 @@ public class UserController {
     private  final ResponseService service;
     private  final UserInfoRepo userInfoRepoService;
     private  final InMemoryTokenBlacklist inMemoryTokenBlacklist;
+    private final RoleRepository roleInfoRepo;
 
 //    @Autowired
 //    public UserController(ResponseService service, UserInfoRepo userInfoRepoService, InMemoryTokenBlacklist tokenBlacklist) {
@@ -66,15 +67,19 @@ public class UserController {
     }
 
     @GetMapping("/allUser")
-    List<UserInfo> allUser (){
+    List<UserInfo> getAllUser (){
         return userInfoRepoService.findAll();
     }
 
     @GetMapping("/user/{id}")
-    Optional<UserInfo> allUser (@PathVariable Integer id){
+    Optional<UserInfo> getUser (@PathVariable Integer id){
         return userInfoRepoService.findById(id);
     }
 
+    @GetMapping("/roles")
+    List<Role> getRoles(){
+        return (List<Role>) roleInfoRepo.findAll();
+    }
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request){
         String token = service.extractTokenFromRequest(request);
