@@ -7,6 +7,7 @@ import com.telcobright.userresponse.repository.UserInfoRepo;
 import com.telcobright.userresponse.service.InMemoryTokenBlacklist;
 import com.telcobright.userresponse.service.ResponseService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +19,19 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/rest/auth/")
 @CrossOrigin(origins = "*")
-
+@AllArgsConstructor
 public class UserController {
 
     private  final ResponseService service;
     private  final UserInfoRepo userInfoRepoService;
     private  final InMemoryTokenBlacklist inMemoryTokenBlacklist;
 
-    @Autowired
-    public UserController(ResponseService service, UserInfoRepo userInfoRepoService, InMemoryTokenBlacklist tokenBlacklist) {
-        this.service = service;
-        this.userInfoRepoService = userInfoRepoService;
-        this.inMemoryTokenBlacklist = tokenBlacklist;
-    }
+//    @Autowired
+//    public UserController(ResponseService service, UserInfoRepo userInfoRepoService, InMemoryTokenBlacklist tokenBlacklist) {
+//        this.service = service;
+//        this.userInfoRepoService = userInfoRepoService;
+//        this.inMemoryTokenBlacklist = tokenBlacklist;
+//    }
 
 
     @GetMapping("/greet")
@@ -38,8 +39,6 @@ public class UserController {
         return "greet";
     }
 
-
-    //create user
     @PostMapping("/addUser")
     ResponseEntity<String> createUser(@RequestBody UserInfo userData){
         return service.createNewUser(userData);

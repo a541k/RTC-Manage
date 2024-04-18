@@ -3,7 +3,7 @@ package com.telcobright.userresponse.service;
 import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
 import com.telcobright.userresponse.repository.RoleRepository;
-import com.telcobright.userresponse.repository.UserRepository;
+import com.telcobright.userresponse.repository.UserInfoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +15,11 @@ import java.util.Optional;
 @Service
 public class RoleService {
     private final RoleRepository roleRepo;
-    private final UserRepository userRepo;
+    private final UserInfoRepo userRepo;
 
     @Autowired
     public RoleService(RoleRepository permissionRepo,
-                       UserRepository userRepo) {
+                       UserInfoRepo userRepo) {
         this.roleRepo = permissionRepo;
         this.userRepo = userRepo;
 

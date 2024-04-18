@@ -5,7 +5,7 @@ import com.telcobright.userresponse.dto.ResponseDto;
 import com.telcobright.userresponse.entity.Role;
 import com.telcobright.userresponse.entity.UserInfo;
 import com.telcobright.userresponse.repository.RoleRepository;
-import com.telcobright.userresponse.repository.UserRepository;
+import com.telcobright.userresponse.repository.UserInfoRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,62 +22,19 @@ import java.util.Optional;
 @Service
 public class ResponseService {
 
-    private final UserRepository userRepo;
+    private final UserInfoRepo userRepo;
 
     private final RoleRepository roleRepo;
 
     @Autowired
-    public ResponseService(UserRepository userRepo, RoleRepository roleRepo) {
+    public ResponseService(UserInfoRepo userRepo, RoleRepository roleRepo) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
     }
 
 
     //get user response
-    public ResponseEntity<ResponseDto> getUserResponse(String email, String password) {
 
-        List<UserInfo> userList = userRepo.findAllByEmail(email);
-
-        try{
-            UserInfo matchedUser = userList.getFirst();
-
-            if(matchedUser.getPassword().equals(password)){
-                //password matched
-                Optional<UserInfo> optionalResponse = userRepo.findById(matchedUser.getId());
-
-                if(optionalResponse.isPresent()){
-
-
-                    UserInfo userResponse = optionalResponse.get();
-
-                    LoggedInUserData data = new LoggedInUserData(userResponse.getFirstName()+" "+ userResponse.getLastName(), userResponse.getPhoneNo());
-                    //userResponse.setSuccess(true);
-
-
-                    ResponseDto responseDto = new ResponseDto();
-                    responseDto.setData(data);
-//                    responseDto.setMessage(userResponse.getMessage());
-                    responseDto.setSuccess(true);
-                    responseDto.setPermissions(userResponse.getRoles());
-
-
-                    return new ResponseEntity<>(responseDto, HttpStatus.OK);
-                }
-            }else{
-                throw new Exception("Password did not match");
-            }
-        }
-        catch (Exception e){
-            System.err.println(e.getMessage());
-            return new ResponseEntity<>(new ResponseDto(), HttpStatus.NOT_FOUND);
-        }
-
-        System.out.println("Failed");
-
-        //user not present with email
-        return new ResponseEntity<>(new ResponseDto(), HttpStatus.NOT_FOUND);
-
-    }
 
 
     //create user
